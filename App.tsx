@@ -3,6 +3,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import * as React from 'react';
 import PushNotification from 'react-native-push-notification';
 import AppInner from './AppInner';
+import messaging from '@react-native-firebase/messaging';
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});
 
 PushNotification.configure({
   // (optional) 토큰이 생성될 때 실행됨(토큰을 서버에 등록할 때 쓸 수 있음)
