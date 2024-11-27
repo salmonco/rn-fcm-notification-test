@@ -1,16 +1,15 @@
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {NavigationContainerRefWithCurrent} from '@react-navigation/native';
 import PushNotification from 'react-native-push-notification';
-import {NavigationContainerRef} from '@react-navigation/native';
+import {RootStackParamList} from './AppInner';
 
-let navigationRef: React.RefObject<NavigationContainerRef> | null = null;
-
-export const setNavigationRef = (
-  ref: React.RefObject<NavigationContainerRef>,
+// 앱을 끈 상태에서 푸시 알림을 누르면 푸시 페이지로 이동하지 않는 문제
+// 앱을 킨 상태에서 푸시 알림을 누르면 푸시 페이지로 이동함
+export const configurePushNotifications = (
+  navigationRef: NavigationContainerRefWithCurrent<RootStackParamList>,
 ) => {
-  navigationRef = ref;
-};
+  console.log(navigationRef);
 
-export const configurePushNotifications = () => {
   PushNotification.configure({
     onRegister: function (token: any) {
       console.log('TOKEN:', token);
@@ -19,8 +18,10 @@ export const configurePushNotifications = () => {
     onNotification: function (notification: any) {
       console.log('NOTIFICATION:', notification);
       const alarmId = notification.data.alarmId;
+      console.log('alarmId', alarmId);
       if (alarmId && navigationRef && navigationRef.current) {
-        navigationRef.current.navigate('TargetScreen', {alarmId});
+        console.log('navigate to PushScreen', alarmId);
+        navigationRef.current.navigate('PushScreen', {alarmId});
       }
       notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
